@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 import weatherData from "./assets/weatherData.json"
 function App() {
   const [hoursData, setHoursData] = useState([]);
+  const [searchInputData, setSearchInputData] = useState("");
+  const [locationData, setLocationData] = useState("");
 
-  const getCity = weatherData.map((city) => { return (city.city.name) })
-  console.log(getCity);
   const getCloudNature = weatherData.map((cloud) => (cloud.list.map((a) => a.weather.map(b => b.description))))
   console.log(getCloudNature);
   const getIcon = weatherData.map((cloud) => (cloud.list.map((a) => a.weather.map(b => b.icon))))
@@ -27,14 +27,22 @@ function App() {
       newHoursData.push(formattedTime);
     }
     setHoursData(newHoursData);
+    const getCity = weatherData.map((city) => { return (city.city.name) })
+    setLocationData(getCity[0])
   }, []);
   console.log(hoursData);
 
+  const onSearchClicked = ()=>{
+    if (searchInputData.trim() !== '') {
+      setLocationData(searchInputData);
+      setSearchInputData('');
+    }
+  }
   return (
     <div className="App">
       <main>
         <aside>
-          <section className='cityNameTag'><h1>{getCity[0]}</h1></section>
+          <section className='cityNameTag'><h1>{locationData}</h1></section>
 
           <section className='dayTags'>
             <article><h6>{day}</h6></article>
@@ -88,13 +96,12 @@ function App() {
           </section>
 
           <div className="filter">
-            <input type='text' placeholder="Type a city.." />
-            <button>search</button>
+            <input type='text' placeholder="Type a city.." value={searchInputData} onChange={(e) => setSearchInputData(e.target.value)} />
+            <button onClick={()=>onSearchClicked()}>search</button>
           </div>
         </aside>
       </main>
     </div>
   );
 }
-
 export default App;
